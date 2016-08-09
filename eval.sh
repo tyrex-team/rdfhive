@@ -2,6 +2,7 @@
 
 PATH_CMD=$(dirname $0)
 
+logFile=" /dev/null"
 debug=0
 while true; do
     case "$1" in
@@ -17,6 +18,7 @@ then
 fi
 dbName=$1
 queryFile=$2
+
 sql=$(bash ${PATH_CMD}/translate2sql.sh $dbName $queryFile)
 if [[ $debug == 1 ]];
 then
@@ -26,8 +28,14 @@ then
     echo "=== SQL Query ==="
     echo $sql
     echo ""
+    echo "=== Results ==="
     sleep 2
 fi
-hive -e "$sql ;"
+tbeg=$(date +%s)
+hive -e "$sql ;" 2> $logFile
+tend=$(date +%s)
+if [[ $debug == 1 ]];
+then echo -e "\nProcess took $(($tend-$tbeg)) seconds."
+fi
 
 exit 0
