@@ -7,6 +7,7 @@ function parseDist {
     while true; do
 	case "$1" in
 	    "select" ) flag=1; shift ;;
+	    "reduced" ) shift ;; # Ignored.
 	    "distinct" ) echo "distinctFlag=1" >> potential.modifier ; shift ;;
 	    "" | "where" | "where{" ) break ;;
 	    * )
@@ -47,7 +48,18 @@ function parseBGP {
     shopt -u nocasematch
 }
 function parseModifiers {
-    :
+    flag=0
+    shopt -s nocasematch
+    while true; do
+	case "$1" in
+	    "}" ) flag=1; shift ;;
+	    "limit" ) if [[ $flag == 1 ]]; then echo "LIMIT $2"; fi ; shift 2 ;;
+	    "offset" ) shift 2 ;; # Ignored.
+	    "" ) break ;;
+	    * ) if [[ $flag == 1 ]]; then break ; else shift ; fi ;;
+	esac
+    done
+    shopt -u nocasematch
 }
 function isVar {
     str1=$1

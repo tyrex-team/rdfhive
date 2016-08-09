@@ -108,7 +108,6 @@ where=$(
     done | xargs | sed 's/ / AND /g'
 )
 
-
 # Printing final SQL query.
 source potential.modifier
 if [[ $distinctFlag == 1 ]];
@@ -123,7 +122,7 @@ then
     echo "WHERE "
     echo $where
 fi
-
+echo $(parseModifiers $(cat $qf))
 
 # Cleaning temporary files.
 rm potential.modifier
