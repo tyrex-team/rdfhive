@@ -1,14 +1,13 @@
 
+echo "distinctFlag=0" >> potential.modifier
+
 function parseDist {
     flag=0
     shopt -s nocasematch
     while true; do
 	case "$1" in
-	    "select" )
-		flag=1
-		shift
-		;;
-	    "distinct" ) shift ;;
+	    "select" ) flag=1; shift ;;
+	    "distinct" ) echo "distinctFlag=1" >> potential.modifier ; shift ;;
 	    "" | "where" | "where{" ) break ;;
 	    * )
 		if [[ $flag == 0 ]];

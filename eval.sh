@@ -1,6 +1,6 @@
 #!/bin/bash
 
-$PATH_CMD=$(dirname $0)
+PATH_CMD=$(dirname $0)
 
 if [[ $# != 2 ]];
 then
