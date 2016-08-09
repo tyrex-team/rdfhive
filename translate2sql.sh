@@ -35,8 +35,10 @@ parseBGP $(cat $qf) | while read s p o; do
     tpNB=$(( $tpNB + 1 ))
 done
 
-
 # Generating the various parts.
+# Potential prefixes first.
+touch potential.prefix
+parsePrefix $(cat $qf) >> potential.prefix
 # Distinguished Variables
 dist=$(
     parseDist $(cat $qf | tr ',' ' ' | sed 's/*/JOKER/') | while read var; do
@@ -84,21 +86,21 @@ tpNB=1
 where=$(
     cat potential.clause | while read s p o; do
 	if [[ $(isVar $s) != 1 && $s != "--" ]];
-	then echo -e "t$tpNB.subj=\'$s\'"
+	then echo -e "t$tpNB.subj=\'$(replaceWithPrefix potential.prefix $s)\'"
 	else
 	    if [[ $(isVar $s) == 1 && $tpNB != $(grep $s potential.join | cut -d' ' -f2) ]];
 	    then echo t$tpNB.subj=t$(grep $s potential.join | cut -d' ' -f2,3 | tr ' ' '.')
 	    fi
 	fi
 	if [[ $(isVar $p) != 1 && $p != "--" ]];
-	then echo -e "t$tpNB.pred=\'$p\'"
+	then echo -e "t$tpNB.pred=\'$(replaceWithPrefix potential.prefix $p)\'"
 	else
 	    if [[ $(isVar $p) == 1 && $tpNB != $(grep $p potential.join | cut -d' ' -f2) ]];
 	    then echo t$tpNB.pred=t$(grep $p potential.join | cut -d' ' -f2,3 | tr ' ' '.')
 	    fi
 	fi
 	if [[ $(isVar $o) != 1 && $o != "--" ]];
-	then echo -e "t$tpNB.obj=\'$o\'"
+	then echo -e "t$tpNB.obj=\'$(replaceWithPrefix potential.prefix $o)\'"
 	else
 	    if [[ $(isVar $o) == 1 && $tpNB != $(grep $o potential.join | cut -d' ' -f2) ]];
 	    then echo t$tpNB.obj=t$(grep $o potential.join | cut -d' ' -f2,3 | tr ' ' '.')
@@ -125,6 +127,7 @@ fi
 echo $(parseModifiers $(cat $qf))
 
 # Cleaning temporary files.
+rm potential.prefix
 rm potential.modifier
 rm potential.join
 rm potential.clause

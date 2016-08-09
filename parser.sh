@@ -61,6 +61,40 @@ function parseModifiers {
     done
     shopt -u nocasematch
 }
+function parsePrefix {
+    shopt -s nocasematch
+    while true; do
+	case "$1" in
+	    "prefix" )
+		echo "$(echo $2 | sed 's/://g') $(echo $3 | sed 's/[<>]//g')"
+		shift 3
+		;;
+	    "" ) break ;;
+	    * ) shift ;;
+	esac
+    done
+    shopt -u nocasematch
+}
+function replaceWithPrefix {
+    prefixFile=$1
+    word=$2
+    if [[ ${word:0:1} == "<" ]];
+    then echo $word
+    else
+	pref=$(echo $word | cut -d':' -f1)
+	if [[ $pref == $word ]];
+	then echo $word
+	else
+	    realuri=$(grep $pref $prefixFile | head -n 1 | cut -d' ' -f2)
+	    if [[ $realuri == "" ]];
+	    then echo $word
+	    else
+		value=$(echo $word | cut -d':' -f2)
+		echo "<"$realuri$value">"
+	    fi
+	fi
+    fi
+}
 function isVar {
     str1=$1
     if [[ ${str1:0:1} == +("?"|"\$") ]] ; 
