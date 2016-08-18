@@ -28,7 +28,7 @@ then
     echo "=== SQL Query ==="
     echo $sql
     echo ""
-    echo "=== Results ==="
+    echo "=== Results (on $dbName) ==="
     sleep 2
 fi
 tbeg=$(date +%s)
