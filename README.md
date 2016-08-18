@@ -1,21 +1,27 @@
 RDFHive
 =======
 
-> Using Apache Hive to evaluate SPARQL queries.
+> Using Apache Hive to directly evaluate SPARQL queries.
 
-__Overview__: SPARQL is the W3C standard query language for querying
-data expressed in the Resource Description Framework (RDF). The
-increasing amounts of RDF data available raise a major need and
-research interest in building efficient and scalable distributed
-SPARQL query evaluators.
+__Overview:__ [SPARQL](https://www.w3.org/TR/sparql11-query/) is the
+W3C standard query language for querying data expressed in
+[RDF](https://www.w3.org/TR/2014/REC-rdf11-concepts-20140225/)
+(Resource Description Framework). The increasing amounts of RDF data
+available raise a major need and research interest in building
+efficient and scalable distributed SPARQL query evaluators.
 
-In this context, we propose and share RDFHive: a simple implementation
-of a distributed RDF datastore benefiting from Apache Hive. RDFHive is
-designed to leverage existing Hadoop infrastructures for evaluating
-SPARQL queries. RDFHive relies on a translation of SPARQL queries into
-SQL queries that Hive is able to evaluate.
+In this context, we propose and share __RDFHive__: a simple
+implementation of a distributed RDF datastore benefiting from Apache
+Hive. RDFHive is designed to leverage existing Hadoop infrastructures
+for evaluating SPARQL queries. RDFHive relies on a translation of
+SPARQL queries into SQL queries that Hive is able to evaluate.
 
-__Version__: 1.0
+Technically, RDFHive directly evaluates SPARQL queries _i.e._ there is
+no preprocessing step, indeed an RDF triple file is seen by Hive as a
+three-column table. Thus, the bash translator simply translates SPARQL
+queries according to this scheme.
+
+__Version:__ 1.0
 
 Requirements
 ------------
@@ -26,31 +32,56 @@ Requirements
 How to use it?
 --------------
 
-In this package, we provide sources to load and query RDF datasets with RDFHive. We also present a simple test-suite based on the popular RDF/SPARQL benchmark: [LUBM](http://swat.cse.lehigh.edu/projects/lubm/). For space reasons, this dataset only contains a few hundred of thousand RDF triples.
+In this package, we provide sources to load and query RDF datasets
+with RDFHive. We also present a simple test-suite based on the popular
+RDF/SPARQL benchmark:
+[LUBM](http://swat.cse.lehigh.edu/projects/lubm/). For space reasons,
+this dataset only contains a few hundred of thousand RDF triples.
 
-__Get the sources__:
+### Get the sources.
 
-    git clone github.com/tyrex-team/rdfhive.git
-    cd rdfhive/
+    git clone github.com/tyrex-team/rdfhive.git ;
+    cd rdfhive/ ;
 
-__Load an RDF dataset__: RDFHive can only load RDF data written according to the [N-Triples](https://www.w3.org/TR/n-triples/) format. This file has to be uploaded first on the HDFS.
+### Load an RDF dataset.
 
-    bash bin/load.sh dbName HDFSFilePath
+RDFHive can only load RDF data written according to the
+[N-Triples](https://www.w3.org/TR/n-triples/) format. This file has to
+be uploaded first on the HDFS.
 
-__Evaluation__: To execute a SPARQL query over a loaded RDF dataset, RDFHive first translates it into SQL and then evaluates the generated query.
+    hadoop fs -copyFromLocal local_file.nt hdfs_file.nt ;
+    bash bin/load.sh dbName hdfs_file.nt ;
 
-    bash bin/eval.sh dbName LocalQueryFile
+### Query Evaluation.
 
-__Remove__: An already created database can also be removed.
+To execute a SPARQL query over a loaded RDF dataset, RDFHive first
+translates it into SQL and then evaluates the generated query. If
+`--debug` is specified, RDFHive will be more verbose.
 
-    bash bin/remove.sh dbName
+    bash bin/eval.sh dbName LocalQueryFile ;
 
-__Test-Suite__: Finally, a very basic test suite is included in this repository to demonstrate RDFHive.
+### Remove a Database.
 
-    cd tests/
-    bash preliminaries.sh
-    bash run-benchmarks.sh
-    bash clean-all.sh
+An already created database can also be removed.
+
+    bash bin/remove.sh dbName ;
+
+### Test Suite.
+
+Finally, a very basic test suite is included in this repository to
+demonstrate RDFHive.
+
+    cd tests/ ;
+    bash preliminaries.sh ;
+    bash run-benchmarks.sh ;
+    bash clean-all.sh ;
+
+### Additional Scripts.
+
+Moreover, two scripts are also part of the project (in bin/):
+`lubmqueries.sh` and `watdivqueries.sh` which already contain
+translation of [LUBM](http://swat.cse.lehigh.edu/projects/lubm/) and
+[WatDiv](http://dsg.uwaterloo.ca/watdiv/) SPARQL queries.
 
 Supported SPARQL Fragment
 -------------------------
@@ -80,4 +111,4 @@ Damien Graux
 Pierre Genev&egrave;s
 Nabil Laya&iuml;da
 
-[Tyrex](tyrex.inria.fr) Team, Inria (France), 2016
+[Tyrex Team](tyrex.inria.fr), Inria (France), 2016
