@@ -19,7 +19,10 @@ SPARQL queries into SQL queries that Hive is able to evaluate.
 Technically, RDFHive directly evaluates SPARQL queries _i.e._ there is
 no preprocessing step, indeed an RDF triple file is seen by Hive as a
 three-column table. Thus, the bash translator simply translates SPARQL
-queries according to this scheme.
+queries according to this scheme. This method has two advantages:
+first, creating a database is very fast; second, since the upfront
+investment is light, RDFHive is an interesting tool to evaluate a few
+SPARQL queries at once.
 
 __Version:__ 1.0
 
@@ -105,10 +108,10 @@ This project is under the [CeCILL](http://www.cecill.info/index.en.html) license
 Authors
 -------
 
-Damien Graux
+Damien Graux  
 <damien.graux@inria.fr>
 
-Pierre Genev&egrave;s
-Nabil Laya&iuml;da
+Pierre Genev&egrave;s  
+Nabil Laya&iuml;da  
 
 [Tyrex Team](tyrex.inria.fr), Inria (France), 2016
