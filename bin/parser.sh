@@ -13,7 +13,7 @@ function parseDist {
 	    * )
 		if [[ $flag == 0 ]];
 		then shift
-		else echo $1; shift
+		else echo "$1" ; shift
 		fi
 		;;
 	esac
@@ -36,7 +36,7 @@ function parseBGP {
 		then shift
 		else 
 		    # Warn: Strings as objects are currently NOT handled!
-		    echo -e $1 $2 $3
+		    echo "$1" "$2" "$3"
 		    if [[ $4 == "." ]];
 		    then shift 4
 		    else shift 3

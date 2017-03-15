@@ -3,6 +3,8 @@
 db=$1
 qf=$2
 
+set -f # Not to expend question mark when echoing variables.
+
 PATH_CMD=$(dirname $0)
 source ${PATH_CMD}/parser.sh
 
@@ -56,7 +58,7 @@ from=$(
 	if [[ $tpNB == 1 ]];
 	then 
 	    echo "$db.triples AS t1"
-	    echo $s $p $o >> potential.clause	
+	    echo $s $p $o >> potential.clause
 	else
 	    if [[ $(isVar $s) == 1 && $(grep $s potential.join | cut -d' ' -f2) != $tpNB ]];
 	    then 
@@ -73,7 +75,10 @@ from=$(
 			echo JOIN $db.triples AS t$tpNB ON t$tpNB.obj=t$(grep $o potential.join | cut -d' ' -f2,3 | tr ' ' '.')
 			echo $s $p -- >> potential.clause
 		    else
-			:
+			# :
+			# Cartesian ... :(
+			echo , $db.triples AS t$tpNB
+			echo $s $p $o >> potential.clause
 		    fi
 		fi  
 	    fi
@@ -131,5 +136,8 @@ rm potential.prefix
 rm potential.modifier
 rm potential.join
 rm potential.clause
+
+#
+set +f
 
 exit 0
